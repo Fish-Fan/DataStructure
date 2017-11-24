@@ -1,4 +1,4 @@
-package com.company;
+package com.company.stack;
 
 /**
  * Created by yanfeng-mac on 2017/11/23.

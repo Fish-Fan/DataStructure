@@ -1,5 +1,8 @@
-package com.company;
+package com.company.list;
 
+import com.company.queue.MyLinkedQueue;
+
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -15,6 +18,44 @@ public class MyLinkedList<E> {
             this.element = element;
             this.pre = pre;
             this.next = next;
+        }
+    }
+
+    private class Itr implements Iterator<E> {
+        private MyLinkedList.Node<E> cursor = head;
+        private int index;
+
+        @Override
+        public boolean hasNext() {
+            if(cursor == null) {
+                return false;
+            } else {
+                if(index <= size) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        @Override
+        public E next() {
+            if(hasNext()) {
+                E result =  (E)cursor.element;
+                cursor = cursor.next;
+                index++;
+                return result;
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        public void remove() {
+            if(cursor != null) {
+                cursor.pre.next = cursor.next;
+                cursor = cursor.next;
+            }
         }
     }
 
@@ -133,5 +174,9 @@ public class MyLinkedList<E> {
             System.out.print(cursor.element + "->");
             cursor = cursor.next;
         }
+    }
+
+    public Iterator iterator() {
+        return new Itr();
     }
 }

@@ -646,7 +646,7 @@
       <workItem from="1511765017439" duration="5696000" />
       <workItem from="1512629118956" duration="2653000" />
       <workItem from="1512638069615" duration="5399000" />
-      <workItem from="1512643689572" duration="12000" />
+      <workItem from="1512643689572" duration="27000" />
     </task>
     <task id="LOCAL-00001" summary="create Queue and LinkedList implements Iterator interface">
       <created>1511516659091</created>
@@ -662,11 +662,18 @@
       <option name="project" value="LOCAL" />
       <updated>1512643563028</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="create Graph with two ways(array and linkedlist)">
+      <created>1512643706934</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1512643706934</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24711000" />
+    <option name="totallyTimeSpent" value="24726000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="773" extended-state="6" />

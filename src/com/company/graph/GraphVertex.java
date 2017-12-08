@@ -7,6 +7,8 @@ import java.util.Scanner;
 /**
  * Created by yanfeng-mac on 2017/12/7.
  * 使用邻接矩阵实现有向图
+ * 优点: 结构简单，易于实现，求入度和出度都很方便
+ * 缺点: 对于稀疏图容易造成空间浪费
  */
 public class GraphVertex {
     private static final int INFINITY = Integer.MAX_VALUE;

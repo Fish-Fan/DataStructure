@@ -6,6 +6,9 @@ import java.util.Scanner;
 /**
  * Created by yanfeng-mac on 2017/12/7.
  * 使用邻接表来实现无向图
+ * 优点： 对于稀疏图不会造成空间浪费问题
+ * 缺点： 求某个顶点的入度和出度不太方便，需要建立邻接表和逆邻接表才可以轻松求出
+ * 只需找出某个顶点，然后遍历该顶点的链表即可
  */
 public class GraphLinkedList {
     private static class Vertex {
@@ -63,11 +66,36 @@ public class GraphLinkedList {
             }
 
         }
-
-
     }
 
-    public boolean contains(String name) {
+    public static GraphLinkedList getDemo() {
+        GraphLinkedList graph = new GraphLinkedList(4);
+
+        Vertex v3 = new Vertex("V3",null);
+        Vertex v2 = new Vertex("V2",null);
+        Vertex v1 = new Vertex("V1",null);
+        Vertex v0 = new Vertex("V0",null);
+
+        //next指向的顶点必须是创建出来的对象，不能直接指向任何已存在的顶点，否则next指针会发生缠绕，造成循环链表
+        v0.next = new Vertex("V1",null);
+        v0.next.next = new Vertex("V2",null);
+        v0.next.next.next = new Vertex("V3",null);
+        v1.next = new Vertex("V0",null);
+        v1.next.next = new Vertex("V2",null);
+        v2.next = new Vertex("V0",null);
+        v2.next.next = new Vertex("V1",null);
+        v2.next.next.next = new Vertex("V3",null);
+        v3.next = new Vertex("V0",null);
+        v3.next.next = new Vertex("V2",null);
+
+        graph.vertexArr[0] = v0;
+        graph.vertexArr[1] = v1;
+        graph.vertexArr[2] = v2;
+        graph.vertexArr[3] = v3;
+        return graph;
+    }
+
+    private boolean contains(String name) {
         for(int i = 0;i < vertexArr.length;i++) {
             if(vertexArr[i].vertexName.equals(name)) {
                 return true;
@@ -81,21 +109,9 @@ public class GraphLinkedList {
             Vertex currentVertex = vertexArr[i];
             Vertex cursor = currentVertex;
 
-//            int flag = 1;
-//            while (cursor.next != null) {
-//                System.out.print(cursor.vertexName + "->");
-//                cursor = cursor.next;
-//            }
-
-            while (true) {
+            while (cursor != null) {
                 System.out.print(cursor.vertexName + "->");
                 cursor = cursor.next;
-
-                if(cursor.next == null) {
-                    System.out.print(cursor.vertexName + "->");
-                    cursor = cursor.next;
-                    break;
-                }
             }
 
             System.out.println();
@@ -103,8 +119,11 @@ public class GraphLinkedList {
     }
 
     public static void main(String[] args) {
-        GraphLinkedList graph = new GraphLinkedList(4);
-        graph.init();
+//        GraphLinkedList graph = new GraphLinkedList(4);
+//        graph.init();
+//        graph.print();
+
+        GraphLinkedList graph = GraphLinkedList.getDemo();
         graph.print();
     }
 

@@ -1,38 +1,45 @@
 package com.company.graph;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
- * Created by yanfeng-mac on 2017/12/8.
- * 邻接表可轻松求出某个顶点的出度，但是求该顶点的入度就需要遍历整个表
- * 逆邻接表可轻松求出某个顶点的入度，但是求该顶点的出度就需要遍历整个表
- * 那么，十字链表就为解决该问题而来，十字链表可轻松求出某个顶点的入度和出度
+ * Created by yanfeng-mac on 2017/12/9.
+ * 上个程序(graphbyconsole.graphCrossLinkedList)中的十字链表是基于控制台的，
+ * 这个直接提供顶点数组和边集合就可以初始化出来一张图，相比控制台来说更方便了些，但是
+ * 就代码量和复杂程度来说还是控制台的多些，相当于出力不讨好了...
  */
 public class GraphCrossLinkedList {
+    /**
+     * vName-->顶点名称
+     * firstin-->顶点的入度链表的头结点
+     * firstout-->顶点的出度链表的头结点
+     */
     private static class Vertex {
-        //顶点名称
         private String vName;
-        //顶点的入度链表
         private Edge firstin;
-        //顶点的出度链表
         private Edge firstout;
 
         public String toString() {
             return this.vName;
         }
+
+        public Vertex() {}
+        public Vertex(String name) {
+            this.vName = name;
+        }
     }
 
+    /**
+     * tailVex-->有向图中边的尾部顶点的下标
+     * headVex-->有向图中边的头部顶点的下标
+     * headLink-->用来存储某个顶点的所有入度边
+     * tailLink-->用来存储某个顶点的所有出度边
+     */
     private static class Edge {
-        //有向图中边的尾部顶点的下标
         private int tailVex;
-        //有向图中边的头部顶点的下标
         private int headVex;
-        //用来存储某个顶点的所有入度边
         private Edge headLink;
-        //用来存储某个顶点的所有出度边
         private Edge tailLink;
 
         public Edge(int tailIndex,int headIndex) {
@@ -41,131 +48,92 @@ public class GraphCrossLinkedList {
         }
     }
 
-    //默认顶点个数
-    private final int INITIAL_SIZE = 10;
-    List<Vertex> vertexArr = null;
-    private int vertexNum;
+    //方便用户初始化图
+    private static class GraphEdge {
 
-    public GraphCrossLinkedList() {
-        vertexArr = new ArrayList<Vertex>(INITIAL_SIZE);
+        private String tail;
+        private String head;
+
+        public GraphEdge(String tailName,String headName) {
+            this.head = headName;
+            this.tail = tailName;
+        }
     }
 
-    public GraphCrossLinkedList(int vertexNum) {
-        this.vertexNum = vertexNum;
-        vertexArr = new ArrayList<Vertex>(vertexNum);
+
+    private List<Vertex> vertexArr;
+
+    public void init(String[] vexs,List<GraphEdge> graphEdges) {
+        initVertexArr(vexs);
+        initGraphEdge(graphEdges);
     }
 
-    public void init() {
-        Scanner scanner = new Scanner(System.in);
-        for(int i = 1;i <= vertexNum;i++) {
-            Vertex vertex = new Vertex();
-            System.out.println("请输入第 " + i + " 个顶点的名称");
-            String vName = scanner.next();
-            vertex.vName = vName;
+    //初始化顶点集合
+    private void initVertexArr(String[] vexs) {
+        vertexArr = new ArrayList<Vertex>(vexs.length);
+        for(int i = 0;i < vexs.length;i++) {
+            Vertex vertex = new Vertex(vexs[i]);
             vertexArr.add(vertex);
         }
-
-        createOutEdgeWithVex();
-        createInEdgeWithVex();
-
-
-
-
     }
 
-    private void createOutEdgeWithVex() {
-        Scanner scanner = new Scanner(System.in);
-        for(int i = 1;i <= vertexNum;i++) {
-            //当前顶点索引
-            int currentVexIndex = i-1;
-            Vertex currentVertex = vertexArr.get(currentVexIndex);
-            System.out.println("请输入顶点 " + currentVertex.vName + " 的出度");
-            int outEdgeNum = scanner.nextInt();
-
-            Edge cursor = null;
-            for(int j = 0;j < outEdgeNum;j++) {
-                System.out.println("请输入该出度边的指向顶点");
-                String headEdgePointVexName = scanner.next();
-                if(contains(headEdgePointVexName)) {
-                    int headEdgePointVexIndex = getVexIndex(headEdgePointVexName);
-                    Edge edge = new Edge(currentVexIndex,headEdgePointVexIndex);
-
-
-                    if(cursor != null) {
-                        //连接该顶点的所有出度边
-                        cursor.tailLink = edge;
-                        cursor = edge;
-                    } else {
-                        cursor = edge;
-                        currentVertex.firstout = cursor;
-                    }
-                } else {
-                    System.out.println("输入的顶点不存在");
-                }
+    //初始化边集合
+    private void initGraphEdge(List<GraphEdge> graphEdges) {
+        for(int i = 0;i < graphEdges.size();i++) {
+            GraphEdge edge = graphEdges.get(i);
+            String headName = edge.head;
+            String tailName = edge.tail;
+            if(contains(headName) && contains(tailName)) {
+                int tailIndex = getVexIndex(tailName);
+                int headIndex = getVexIndex(headName);
+                Vertex headVertex = vertexArr.get(headIndex);
+                Vertex tailVertex = vertexArr.get(tailIndex);
+                Edge edgeInit = new Edge(tailIndex,headIndex);
+                insertVexEdge(headVertex,tailVertex,edgeInit);
             }
 
         }
     }
 
-    private void createInEdgeWithVex() {
-        Scanner scanner = new Scanner(System.in);
-        for(int i = 1;i <= vertexNum;i++) {
-            //当前顶点索引
-            int currentVexIndex = i-1;
-            Vertex currentVertex = vertexArr.get(currentVexIndex);
-            System.out.println("请输入顶点 " + currentVertex.vName + " 的入度");
-            int outEdgeNum = scanner.nextInt();
+    //插入顶点的边
+    private void insertVexEdge(Vertex headV,Vertex tailV,Edge edge) {
 
-            Edge cursor = null;
-            for(int j = 0;j < outEdgeNum;j++) {
-                System.out.println("请输入该入度边的尾部顶点");
-                String tailEdgePointVexName = scanner.next();
-                if(contains(tailEdgePointVexName)) {
-                    int tailEdgePointVexIndex = getVexIndex(tailEdgePointVexName);
-                    Vertex tailVertex = vertexArr.get(tailEdgePointVexIndex);
-
-                    Edge edge = tailVertex.firstout;
-                    Edge findCursor = edge;
-                    //查找该入度边
-                    while (findCursor != null) {
-                        if(findCursor.headVex == currentVexIndex) {
-                            if(cursor == null) {
-                                currentVertex.firstin = findCursor;
-                                cursor = findCursor;
-                                break;
-                            } else {
-                                //连接该顶点所有入度边
-                                cursor.headLink = findCursor;
-                                cursor = findCursor;
-                                break;
-                            }
-
-                        }
-                        findCursor = findCursor.tailLink;
-                    }
-                } else {
-                    System.out.println("输入的顶点不存在");
-                }
-            }
-
+        //头插法将出度边插入至顶点中
+        if(tailV.firstout == null) {
+            tailV.firstout = edge;
+        } else {
+            Edge tailVNextEdge = tailV.firstout;
+            edge.tailLink = tailVNextEdge;
+            tailV.firstout = edge;
+        }
+        //头插法将入度边插入至顶点中
+        if(headV.firstin == null) {
+            headV.firstin = edge;
+        } else {
+            Edge headVNextEdge = headV.firstin;
+            edge.headLink = headVNextEdge;
+            headV.firstin = edge;
         }
     }
 
-    public void getVexInEdge() {
+    private boolean contains(String name) {
         for(Vertex vertex : vertexArr) {
-            Edge inEdge = vertex.firstin;
-            Edge cursor = inEdge;
-
-            System.out.println("顶点 " + vertex.vName + " 的所有入度顶点为: ");
-
-            while (cursor != null) {
-                System.out.print(cursor.tailVex + "->");
-                cursor = cursor.headLink;
-            }
-            System.out.println();
+            if(vertex.vName.equals(name))
+                return true;
         }
+        return false;
     }
 
+    //获取顶点的下标
+    private int getVexIndex(String name) {
+        for(int i = 0;i < vertexArr.size();i++) {
+            if(vertexArr.get(i).vName.equals(name))
+                return i;
+        }
+        return -1;
+    }
+
+    //获取各个顶点的出度顶点
     public void print() {
         for(int i = 0;i < vertexArr.size();i++) {
             Vertex vertex = vertexArr.get(i);
@@ -181,28 +149,41 @@ public class GraphCrossLinkedList {
         }
     }
 
-    private boolean contains(String name) {
+    //获取各个顶点的入度顶点
+    public void getVexInEdge() {
         for(Vertex vertex : vertexArr) {
-            if(vertex.vName.equals(name))
-                return true;
-        }
-        return false;
-    }
+            Edge inEdge = vertex.firstin;
+            Edge cursor = inEdge;
 
-    private int getVexIndex(String name) {
-        for(int i = 0;i < vertexArr.size();i++) {
-            if(vertexArr.get(i).vName.equals(name))
-                return i;
-        }
-        return -1;
-    }
+            System.out.println("顶点 " + vertex.vName + " 的所有入度顶点为: ");
 
+            while (cursor != null) {
+                System.out.print(cursor.tailVex + "->");
+                cursor = cursor.headLink;
+            }
+            System.out.println();
+        }
+    }
 
     public static void main(String[] args) {
-        GraphCrossLinkedList grap = new GraphCrossLinkedList(4);
-        grap.init();
-        System.out.println(grap.vertexArr);
-        grap.print();
-        grap.getVexInEdge();
+        GraphCrossLinkedList graph = new GraphCrossLinkedList();
+        String[] vexs = {"V0","V1","V2","V3"};
+        List<GraphEdge> edgeList = new ArrayList<GraphEdge>();
+        GraphEdge graphEdge = new GraphEdge("V0","V3");
+        GraphEdge graphEdge1 = new GraphEdge("V1","V0");
+        GraphEdge graphEdge2 = new GraphEdge("V2","V0");
+        GraphEdge graphEdge3 = new GraphEdge("V1","V2");
+        GraphEdge graphEdge4 = new GraphEdge("V2","V1");
+
+        edgeList.add(graphEdge);
+        edgeList.add(graphEdge1);
+        edgeList.add(graphEdge2);
+        edgeList.add(graphEdge3);
+        edgeList.add(graphEdge4);
+
+        graph.init(vexs,edgeList);
+        graph.print();
+        graph.getVexInEdge();
     }
+
 }

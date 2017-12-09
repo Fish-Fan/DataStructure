@@ -1,4 +1,4 @@
-package com.company.graph;
+package com.company.graphbyconsole;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -119,9 +119,9 @@ public class GraphLinkedList {
     }
 
     public static void main(String[] args) {
-//        GraphLinkedList graph = new GraphLinkedList(4);
-//        graph.init();
-//        graph.print();
+//        GraphLinkedList graphbyconsole = new GraphLinkedList(4);
+//        graphbyconsole.init();
+//        graphbyconsole.print();
 
         GraphLinkedList graph = GraphLinkedList.getDemo();
         graph.print();

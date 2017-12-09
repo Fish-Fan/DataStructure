@@ -1,4 +1,4 @@
-package com.company.graph;
+package com.company.graphbyconsole;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,9 +113,9 @@ public class GraphVertex {
 
     public static void main(String[] args) {
         //手动生成一张邻接矩阵
-//        GraphVertex graph = new GraphVertex(5,6);
-//        graph.init();
-//        graph.print();
+//        GraphVertex graphbyconsole = new GraphVertex(5,6);
+//        graphbyconsole.init();
+//        graphbyconsole.print();
 
         //快速生成一张示例邻接矩阵
         GraphVertex graph = GraphVertex.getDemo();
